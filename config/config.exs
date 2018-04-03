@@ -2,6 +2,21 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
+config :logger, :example,
+  facility: :user,
+  transport: :tcp,
+  protocol: :rfc5424,
+  app_name: "app_name",
+  host: {127, 0, 0, 1},
+  port: 514,
+  # gen_tcp and gen_udp specific
+  transport_options: [],
+  # timeout val is milliseconds
+  timeout: 5_000,
+  # unix socket path for :local transport
+  path: "/dev/log"
+
+# config :logger, backends: [:console, {Dumpster, :example}]
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this
 # file won't be loaded nor affect the parent project. For this reason,
