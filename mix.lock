@@ -1,0 +1,3 @@
+%{
+  "syslog_socket": {:hex, :syslog_socket, "1.7.3", "cac1643503b3b6164e7838f65cd3746f5f920d09f4971db74341d687ee317c79", [:rebar3], [], "hexpm"},
+}
