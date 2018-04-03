@@ -124,7 +124,7 @@ defmodule Dumpster do
     ]
 
     case transport_options do
-      nil -> Keyword.put(c, :transport_options, transport_options)
+      x when is_list(x) -> Keyword.put(c, :transport_options, x)
       _ -> c
     end
   end
