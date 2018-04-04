@@ -107,6 +107,7 @@ defmodule Dumpster do
     timeout = Keyword.get(config, :timeout, 5_000)
     path = Keyword.get(config, :path, "dev/log")
     transport_options = Keyword.get(config, :transport_options)
+    hostname = Keyword.get(config, :hostname)
 
     if app_name == nil do
       raise ArgumentError, "app_name required for :dumpster config"
@@ -123,9 +124,15 @@ defmodule Dumpster do
       path: String.to_charlist(path)
     ]
 
-    case transport_options do
-      x when is_list(x) -> Keyword.put(c, :transport_options, x)
-      _ -> c
+    c =
+      case transport_options do
+        x when is_list(x) -> Keyword.put(c, :transport_options, x)
+        _ -> c
+      end
+
+    case hostname do
+      nil -> c
+      _ -> Keyword.put(c, :hostname, String.to_charlist(hostname))
     end
   end
 end
