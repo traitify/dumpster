@@ -69,7 +69,11 @@ defmodule Dumpster do
     |> to_string()
   end
 
-  defp format_event(level, msg, timestamp, metadata, %{formatter: {fmt_mod, fmt_fun}}) do
+  defp format_event(level, msg, timestamp, metadata, %{
+         formatter: {fmt_mod, fmt_fun},
+         metadata: config_metadata
+       }) do
+    metadata = metadata |> Keyword.take(config_metadata)
     apply(fmt_mod, fmt_fun, [level, msg, timestamp, metadata])
   end
 
