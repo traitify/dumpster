@@ -59,7 +59,7 @@ defmodule Dumpster do
 
   defp format_event(level, msg, timestamp, metadata, %{
          format: format,
-         formatter: Logger.Formatter,
+         formatter: {Logger.Formatter, :format},
          metadata: config_metadata
        }) do
     metadata = metadata |> Keyword.take(config_metadata)
@@ -69,12 +69,8 @@ defmodule Dumpster do
     |> to_string()
   end
 
-  defp format_event(level, msg, timestamp, metadata, %{
-         format: format,
-         formatter: formatter,
-         metadata: config_metadata
-       }) do
-    apply(formatter, :format, [format, level, msg, timestamp, metadata, config_metadata])
+  defp format_event(level, msg, timestamp, metadata, %{formatter: {fmt_mod, fmt_fun}}) do
+    apply(fmt_mod, fmt_fun, [level, msg, timestamp, metadata])
   end
 
   defp get_config(config_name, overrides) do
@@ -84,9 +80,9 @@ defmodule Dumpster do
     level = Keyword.get(config, :level, :info)
     metadata = Keyword.get(config, :metadata, [])
 
-    formatter = Keyword.get(config, :formatter, Logger.Formatter)
+    formatter = Keyword.get(config, :formatter, {Logger.Formatter, :format})
     format_str = Keyword.get(config, :format, @default_pattern)
-    format = apply(formatter, :compile, [format_str])
+    format = Logger.Formatter.compile(format_str)
 
     %{
       level: level,
