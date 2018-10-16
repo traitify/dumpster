@@ -31,7 +31,7 @@ defmodule Dumpster do
         {level, _gl, {Logger, msg, timestamp, metatdata}},
         %{slogger: slogger, config: config} = s
       ) do
-    min_level = config.level
+    min_level = config.level |> to_atom()
 
     if is_nil(min_level) or Logger.compare_levels(level, min_level) != :lt do
       event = format_event(level, msg, timestamp, metatdata, config)
@@ -56,6 +56,14 @@ defmodule Dumpster do
   end
 
   #### Internal functions ####
+
+  defp to_atom(v) do
+    case v do
+      x when is_atom(x) -> x
+      x when is_binary(x) -> String.to_atom(x)
+      _ -> raise "#{inspect(v)} is not a binary or an atom"
+    end
+  end
 
   defp format_event(level, msg, timestamp, metadata, %{
          format: format,
